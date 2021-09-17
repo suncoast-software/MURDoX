@@ -1,0 +1,13 @@
+{
+  "Token": "token",
+  "Prefix": "!",
+  "exclude": [
+    "**/bin",
+    "**/bower_components",
+    "**/jspm_packages",
+    "**/node_modules",
+    "**/obj",
+    "**/platforms"
+  ],
+  "ConnectionString": "Host=host;Port=port;Database=dbName;Username=username;Password=password"
+}
