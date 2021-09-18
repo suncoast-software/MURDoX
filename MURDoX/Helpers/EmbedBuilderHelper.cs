@@ -45,7 +45,7 @@ namespace MURDoX.Helpers
                 else
                     return defaultColor;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return DiscordColor.Rose;
             }

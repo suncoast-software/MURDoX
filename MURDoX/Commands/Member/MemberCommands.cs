@@ -2,6 +2,8 @@
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
+using MURDoX.Helpers;
+using MURDoX.Model;
 using MURDoX.Services;
 using System;
 using System.Collections.Generic;
@@ -13,7 +15,7 @@ namespace MURDoX.Commands.Member
 {
    public class MemberCommands : BaseCommandModule
     {
-        private  MemberService _memService { get; }
+        private MemberService _memService { get; }
 
         public MemberCommands(MemberService memService)
         {
@@ -22,11 +24,47 @@ namespace MURDoX.Commands.Member
 
         #region WHOIS
         [Command("whois")]
-        [Description("gets server member information")]
+        [Description("guild member information")]
         public async Task Whois(CommandContext ctx, [RemainingText] string args)
         {
+            var botAvatar = ctx.Client.CurrentUser.GetAvatarUrl(DSharpPlus.ImageFormat.Png);
             var members = await _memService.GetAllMembersAsync(ctx);
-            string test = "";
+            var member = members.Where(x => x.Mention.Equals(args)).FirstOrDefault();
+
+            if (member == null)                                                             
+                member = members.Where(x => x.DisplayName.Equals(args)).FirstOrDefault(); // user didn't use the @mention format so query based on Displayname
+           
+            if (member is null)
+            {
+                await ctx.Channel.SendMessageAsync($"Member : {args} not found!");
+                return;
+            }
+            else
+            {
+                var memCreated = (member is not null) ? member.JoinedAt : DateTime.Now;
+                var today = DateTime.Now;
+                var memFor = (int)(today - memCreated).TotalDays;
+                var roles = (member is not null) ? member.Roles : new List<DiscordRole>();
+                var fields = new EmbedField[]
+                {
+                new EmbedField { Name = "Member", Value = member.Username, Inline = true },
+                new EmbedField { Name = "Time Created", Value = member.CreationTimestamp.ToString(), Inline = true },
+                new EmbedField { Name = "Joined", Value = $"{memFor} days ago", Inline = true },
+                };
+                var embed = new Embed()
+                {
+                    Color = "blurple",
+                    Author = ctx.Message.Author.Username,
+                    ThumbnailImgUrl = botAvatar,
+                    Desc = "Whois Info",
+                    Fields = fields,
+                    FooterImgUrl = botAvatar,
+                    Footer = $"MURDoX {DateTime.Now}"
+                };
+                var builder = new EmbedBuilderHelper();
+                await ctx.Channel.SendMessageAsync(builder.Build(embed));
+            }
+            
         }
         #endregion
 
@@ -36,7 +74,7 @@ namespace MURDoX.Commands.Member
         [RequirePermissions(Permissions.ManageChannels)]
         public async Task AddMember(CommandContext ctx, [RemainingText] string args)
         {
-
+            await ctx.Channel.SendMessageAsync("");
         }
         #endregion
     }

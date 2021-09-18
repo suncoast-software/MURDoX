@@ -28,18 +28,45 @@ namespace MURDoX.Commands.Trivia
         [RequirePermissions(Permissions.ManageChannels)]
         public async Task NewGame(CommandContext ctx, [RemainingText] string input) //format = !newgame [category] [difficulty]
         {
+            var botAvatar = ctx.Client.CurrentUser.GetAvatarUrl(DSharpPlus.ImageFormat.Png);
             if (input is null or "")
             {
-                //TODO : update user the command was in the wrong format!   
+                var builder = new EmbedBuilderHelper();
+                var embed = new Embed()
+                {
+                    Color = "darkgray",
+                    Title = "FORMAT ERROR",
+                    Desc = "```command parameters must not be empty, please try again```",
+                    FooterImgUrl = botAvatar,
+                    Footer = $"MURDoX {DateTime.Now}"
+                };
+                await ctx.Channel.SendMessageAsync(builder.Build(embed));
             }
             else
             {
                 var inputs = input.Split(" ");
-                var cat = UtilityHelper.ConvertCategory(inputs[0]);
-                var diff = inputs[1];
+                if (inputs.Length < 2)
+                {
+                    var builder = new EmbedBuilderHelper();
+                    var embed = new Embed()
+                    {
+                        Color = "darkgray",
+                        Title = "FORMAT ERROR",
+                        Desc = "```command was in wrong format, or not enough parameters were given, please try again```",
+                        FooterImgUrl = botAvatar,
+                        Footer = $"MURDoX {DateTime.Now}"
+                    };
+                    await ctx.Channel.SendMessageAsync(builder.Build(embed));
+                }
+                else
+                {
+                    var cat = UtilityHelper.ConvertCategory(inputs[0]);
+                    var diff = inputs[1];
 
-                Game game = new Game(ctx);
-                await Game.StartNewGame(cat, diff);
+                    Game _ = new(ctx);
+                    await Game.StartNewGame(cat, diff);
+                }
+               
             }
 
 

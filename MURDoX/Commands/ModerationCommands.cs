@@ -42,10 +42,10 @@ namespace MURDoX.Commands
             var fields = new EmbedField[] { startDateField, yearsField, weeksField, daysField, hoursField, minutesField, secondsField };
             var embedBuilder = new EmbedBuilderHelper();
 
-            Embed embed = new Embed
+            Embed embed = new()
             {
                 Title = "UPTIME",
-                Author = $"User {messageAuthor.Username} Requested Uptime!",
+                Author = $"{messageAuthor.Username} Requested Uptime!",
                 Desc = $"total time \'{botName}\' has been online.",
                 Footer = $"{botName} ©️{DateTime.Now.ToLongDateString()}",
                 AuthorAvatar = messageAuthor.GetAvatarUrl(DSharpPlus.ImageFormat.Jpeg),
@@ -67,7 +67,7 @@ namespace MURDoX.Commands
         [Description("ping the database and discord and return the speed of each.")]
         public async Task Ping(CommandContext ctx)
         {
-            Stopwatch sw = new Stopwatch();
+            Stopwatch sw = new();
             var embedBuilder = new EmbedBuilderHelper();
            
             var botAvatar = ctx.Client.CurrentUser.AvatarUrl;
@@ -80,18 +80,18 @@ namespace MURDoX.Commands
             sw.Stop();
             await pongMessage.DeleteAsync();
 
-            EmbedField dbSpeedField = new EmbedField { Name = "Database Latency", Value = $":hourglass_flowing_sand: {dbLatTime} ms", Inline = true };
-            EmbedField discordSpeedField = new EmbedField { Name = "Message Latency", Value = $":notepad_spiral: {messageLatTime} ms", Inline = true };
-            EmbedField pingSpeedField = new EmbedField { Name = "Discord Latency", Value = $":timer: {ctx.Client.Ping} ms", Inline = true };
+            EmbedField dbSpeedField = new() { Name = "Database Latency", Value = $":hourglass_flowing_sand: {dbLatTime} ms", Inline = true };
+            EmbedField discordSpeedField = new() { Name = "Message Latency", Value = $":notepad_spiral: {messageLatTime} ms", Inline = true };
+            EmbedField pingSpeedField = new() { Name = "Discord Latency", Value = $":timer: {ctx.Client.Ping} ms", Inline = true };
             var fields = new EmbedField[] { dbSpeedField, discordSpeedField, pingSpeedField };
 
-            Embed embed = new Embed
+            Embed embed = new()
             {
                 Title = "LATENCY",
-                Author = $"User {ctx.Message.Author.Username} Requested Latency!!",
+                Author = $"{ctx.Message.Author.Username} Requested Latency!!",
                 Desc = $"total time \'{botName}\' took to round trip the database, discord and message server.",
                 Footer = $"{botName} ©️{DateTime.Now.ToLongDateString()}",
-                AuthorAvatar = ctx.Message.Author.GetAvatarUrl(DSharpPlus.ImageFormat.Jpeg),
+                AuthorAvatar = ctx.Message.Author.GetAvatarUrl(DSharpPlus.ImageFormat.Png),
                 ImgUrl = null,
                 ThumbnailImgUrl = botAvatar,
                 FooterImgUrl = botAvatar,
@@ -127,6 +127,36 @@ namespace MURDoX.Commands
                 await Task.Delay(delay);
                 await m.DeleteAsync();
             }
+        }
+        #endregion
+
+        #region TODO
+        [Command("todo")]
+        [Description("list's the top 5 todo development items")]
+        [RequireRoles(RoleCheckMode.Any, roleNames: "Dev")]
+        public async Task Todo(CommandContext ctx)
+        {
+            using var db = new AppDbContext();
+            var todoList = db.Todos
+                              .OrderBy(x => x.Created)
+                              .Take(5)
+                              .ToList();
+            var fields = new EmbedField[4];
+            for (int i = 0; i < todoList.Count; i++)
+            {
+                var curTodo = todoList[i];
+                fields[0] = new EmbedField { Name = "TODO", Value = curTodo.Name, Inline = true };
+                fields[1] = new EmbedField { Name = "Description", Value = curTodo.Desc, Inline = true };
+                fields[2] = new EmbedField { Name = "Status", Value = curTodo.Status.ToString(), Inline = true };
+                fields[3] = new EmbedField { Name = "Comment", Value = curTodo.Comment, Inline = false };
+            }
+
+            Embed embed = new()
+            {
+
+            };
+
+            await ctx.Channel.SendMessageAsync("");
         }
         #endregion
 

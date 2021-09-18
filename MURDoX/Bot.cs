@@ -96,14 +96,14 @@ namespace MURDoX
             await Client.ConnectAsync(new DiscordActivity("Everyone", ActivityType.Watching)).ConfigureAwait(false);
 
             //start the server timer
-            TimerService timerService = new TimerService();
+            TimerService timerService = new();
             timerService.Start();
 
             //Load all Server Members into a List<DiscordMember>
             // var members = await UtilityHelper.GetServerMembers(Client);
             var guild = await Client.GetGuildAsync(682367713011695617);
             var members = await guild.GetAllMembersAsync();
-         
+            
             //wait - this keeps the console running
             await Task.Delay(-1).ConfigureAwait(false);
         }
@@ -174,7 +174,7 @@ namespace MURDoX
                     await u.SendMessageAsync("```Welcome to the server, your Id and usename has been saved in the database!```");
 
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     await logChannel.SendMessageAsync($"dm's are turned off for user {u.Username}");
                     return Task.CompletedTask;
@@ -215,16 +215,24 @@ namespace MURDoX
         private async Task Client_Ready(DiscordClient sender, ReadyEventArgs e)
         {
             var botName = sender.CurrentUser.Username;
-            await SendLogMessage($"```{botName} is Online: Connected At: {DateTime.Now}```").ConfigureAwait(false);
+            var guildCount = Client.Guilds.Count;
+            await SendLogMessage($"```{botName} is Online: in {guildCount} Guilds : Connected At: {DateTime.Now}```").ConfigureAwait(false);
+            
             Console.WriteLine($"{botName} Connected!");
+           
             //return Task.CompletedTask;
         }
 
         private async Task SendLogMessage(string message)
         {
-            ulong channelId = 762711629829767218;
-            var logChannel = await Client.GetChannelAsync(channelId).ConfigureAwait(false);
-            await logChannel.SendMessageAsync(message);
+            var logIds = new ulong[] { 888659027607814214, 762711629829767218, 888659367824601160, 752498600247820388 };
+
+            foreach (var id in logIds)
+            {
+                var logChannel = await Client.GetChannelAsync(id).ConfigureAwait(false);
+                await logChannel.SendMessageAsync(message);
+            }
+            
         }
 
         private void RegisterCommands() => Client.GetCommandsNext().RegisterCommands(Assembly.GetExecutingAssembly());

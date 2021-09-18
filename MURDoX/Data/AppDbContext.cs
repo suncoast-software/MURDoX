@@ -11,6 +11,7 @@ namespace MURDoX.Data
 {
     public class AppDbContext : DbContext
     {
+        public DbSet<Todo> Todos { get; set; }
         public DbSet<Tag> Tags { get; set; }
         public DbSet<Log> Logs { get; set; }
         public DbSet<DiscordUser> Users { get; set; }

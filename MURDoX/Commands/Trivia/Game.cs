@@ -61,7 +61,7 @@ namespace MURDoX.Commands.Trivia
             embed.Color = "blurple";
             embed.Title = "MURDoX Trivia Quest Version 1.0.0";
             embed.AuthorAvatar = bot;
-            embed.Desc = question1;
+            embed.Desc = $"```{question1}```";
             embed.Fields = fields;
             embed.Footer = $"Remaining Questions : {_questions.Count - 1} - correct answer {question.CorrectAnswer}";//change this
             var embedBuilder = new EmbedBuilderHelper();
@@ -69,7 +69,6 @@ namespace MURDoX.Commands.Trivia
             _questions.Remove(question);
             //var answered = ctx.Channel.GetMessageAsync(ctx.Message.Id);
             CurrentQuestion = question;
-            var test = "";
 
             while (isAlive)
             {
@@ -89,7 +88,7 @@ namespace MURDoX.Commands.Trivia
                         embed.Color = "blurple";
                         embed.Title = "MURDoX Trivia Quest Version 1.0.0";
                         embed.AuthorAvatar = bot;
-                        embed.Desc = question1;
+                        embed.Desc = $"```{question1}```";
                         embed.Fields = fields;
                         embed.Footer = $"Remaining Questions : {_questions.Count - 1} - correct answer {question.CorrectAnswer}";//change this
 
@@ -120,7 +119,7 @@ namespace MURDoX.Commands.Trivia
                         embed.Color = "blurple";
                         embed.Title = "MURDoX Trivia Quest Version  1.0.0";
                         embed.AuthorAvatar = bot;
-                        embed.Desc = question1;
+                        embed.Desc = $"```{question1}```";
                         embed.Fields = fields;
                         embed.Footer = $"Remaining Questions : {_questions.Count - 1} - correct answer {question.CorrectAnswer}";//change this
                         embedBuilder = new EmbedBuilderHelper();
@@ -182,7 +181,7 @@ namespace MURDoX.Commands.Trivia
                     var embed = new Embed()
                     {
                         Color = "orange",
-                        Desc = $"{username} answered correctly!",
+                        Desc = $"```{username} answered correctly!```",
                         Fields = fields,
                         Footer = $"MURDoX scanning chat always"
 

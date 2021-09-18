@@ -34,7 +34,7 @@ namespace MURDoX.Utilities.HelpFormatter
 
             if (Command == null)
             {
-                embed.WithTitle("Silk Commands:")
+                embed.WithTitle("MURDoX Commands:")
                     .WithFooter("* = Group | ** = Executable group");
                 IOrderedEnumerable<IGrouping<string?, Command>> modules = Subcommands!
                     .GroupBy(x => x.Module.ModuleType.GetCustomAttribute<CategoryAttribute>()?.Name)
